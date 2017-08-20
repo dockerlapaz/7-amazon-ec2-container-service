@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<title>Amazon ECS vs. Kubernetes</title>
+		<link rel="stylesheet" href="static/normalize.min.css" media="screen">
+		<link rel="stylesheet" href="static/estilos.css" media="screen">
+	</head>
+	<body>
+		<div id='wrapper'>
+			<h1>Amazon ECS vs. Kubernetes</h1>
+			<ul>
+			<form class="" action="/votar" method="post">
+				<li class="ecs">
+					<input id="ecs" type="radio" name="scheduler" onclick="this.form.submit();" value="ecs">
+					<label for="ecs">Amazon ECS</label>
+				</li>
+				<li class="kubernetes">
+					<input id="kubernetes" type="radio" name="scheduler" onclick="this.form.submit();" value="kubernetes">
+					<label for="kubernetes">Kubernetes</label>
+				</li>
+			</form>
+			</ul>
+			<h2>Resultados de la votación</h2>
+			<ul>
+				<li>{{.Ecs}} - Amazon ECS</li>
+				<li>{{.Kubernetes}} - Kubernetes</li>
+			</ul>
+			<footer>
+<!-- 				<p>
+					Procesado por el contenedor con ID <br>
+					<?php echo getenv('HOSTNAME');?>
+				</p> -->
+			</footer>
+		</div>
+	</body>
+</html>
