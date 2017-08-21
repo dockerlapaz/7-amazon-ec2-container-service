@@ -1,0 +1,18 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "deleteredis",
+      "image": "redis:alpine",
+      "cpu": 512,
+      "memoryReservation": 512,
+      "dnsSearchDomains": ["miapp.internal"],
+      "portMappings": [{
+        "hostPort": 6379,
+        "containerPort": 6379,
+        "protocol": "tcp"
+      }],
+      "essential": true
+    }
+  ],
+  "family": "deleteredis"
+}
