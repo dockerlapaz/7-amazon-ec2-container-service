@@ -1,21 +1,19 @@
 # Docker Nights 7: Amazon EC2 Container Service
 
-## Requisitos
+## Requisitos
 * Una cuenta en [Amazon Web Services](https://aws.amazon.com/)
-* El [CLI de AWS](https://aws.amazon.com/cli) instalado y configurado
-* Instalar el [CLI de ECS](https://aws.amazon.com/ecs)
-* [Docker](https://www.docker.com)
+* [Docker](https://www.docker.com) 17.05 o superior
 
 ## Compilando la aplicación
 
+Necesitas instalar [Go 1.8](https://golang.org) o superior para compilar la aplicación.
+
 ```bash
-# Necesitas GO instalado para compilar la aplicación
-$ GOOS=linux go build -o app .
-$ docker-compose build
+$ make
 $ docker-compose up
 ```
 
-Abre [http://localhost:8080/](http://localhost:8080/)
+La aplicación estará disponible en [http://localhost:8080/](http://localhost:8080).
 
 ## Creando un repositorio privado en ECS
 
@@ -51,53 +49,9 @@ Copia y pega el resultado para ingresar al repositorio desde Docker.
 
 ```bash
 # Reemplaza repositoryUri con la url del comando aws ecr create-repository
-$ docker build -t repositoryUri:v1 .
+$ docker tag dockerlapaz/votacion:go repositoryUri:v1
 $ docker push repositoryUri:v1
 ```
-
-## Generando un cluster para ECS
-
-Lanza un cluster usando este link: [Lanzar cluster en ECS](https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/create/new)
-
-* **Cluster Name:** miappCluster
-* **EC2 instance type:** t2.small
-* **Number of instances:** 2
-
-**Importante:** Un keypair (llave SSH) debe existir para poder ingresar a los servidores que correrán los contenedores. [Crear llave SSH](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#KeyPairs:sort=keyName)
-
-_El resto de las opciones puede dejarse por defecto._
-
-## Listar las instancias de un cluster
-
-```bash
-$ aws ecs list-container-instances --cluster miappCluster
-```
-
-## Crear un dominio interno en Route 53
-Usa este link para ir a Route 53: [Panel Route 53](https://console.aws.amazon.com/route53/home?region=us-east-1#hosted-zones:)
-
-Click en `Create Hosted Zone`:
-
-* **Domain name:** miapp.internal
-* **Command:** Dominio interno para miapp
-* **Type**: A private hosted zone for Amazon VPC
-* **VPC ID**: _Encontrar el VPC de US East (N. Virginia)_
-
-Click en `Create` para terminar la creación del dominio interno.
-
-## Crear task definitions
-
-Redis:
-
-```json
-$ aws ecs register-task-definition --cli-input-json file://redis.json
-```
-App:
-
-```bash
-aws ecs register-task-definition --cli-input-json file://app.json
-```
-
 
 
 
