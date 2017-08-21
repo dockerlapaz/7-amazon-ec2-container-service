@@ -6,6 +6,7 @@ package main
 
 // Importar todos los paquetes
 import (
+  "os"
   "fmt"
   "html/template"
   "log"
@@ -16,6 +17,8 @@ import (
 
 // Funcion principal
 func main() {
+  // Dar feedback al sysadmin es mucho muy importante
+  log.Println("Iniciando la aplicación...")
   // Funcion principal
   http.HandleFunc("/", Inicio)
   // Aqui manejamos el voto
@@ -30,6 +33,7 @@ func main() {
 type ContarVotos struct {
   Ecs         int
   Kubernetes  int
+  Host        string
 }
 
 func Votar(w http.ResponseWriter, r *http.Request) {
@@ -41,8 +45,15 @@ func Votar(w http.ResponseWriter, r *http.Request) {
   // Logear el voto
   fmt.Println("El usuario ha votado por ", voto)
 
+  redis_db := ":6379"
+
+  if os.Getenv("REDIS_DB") != "" {
+    redis_db = os.Getenv("REDIS_DB")
+  }
+
   // Nos conectamos a Redis
-  c, err := redis.Dial("tcp", ":6379")
+  log.Println("Conectando a ", redis_db)
+  c, err := redis.Dial("tcp", redis_db)
     if err != nil {
       panic(err)
     }
@@ -59,9 +70,15 @@ func Votar(w http.ResponseWriter, r *http.Request) {
 
 func Inicio(w http.ResponseWriter, r *http.Request){
 
+  redis_db := ":6379"
+  if os.Getenv("REDIS_DB") != "" {
+    redis_db = os.Getenv("REDIS_DB")
+  }
+
   // Otra conexion a redis
   // TODO: declarar la conexion globalmente
-  c, err := redis.Dial("tcp", ":6379")
+  log.Println("Conectando a ", redis_db)
+  c, err := redis.Dial("tcp", redis_db)
     if err != nil {
       panic(err)
     }
@@ -79,6 +96,7 @@ func Inicio(w http.ResponseWriter, r *http.Request){
   ObtenerVotos := ContarVotos{
     Ecs: ecs,
     Kubernetes: kubernetes,
+    Host: os.Getenv("HOSTNAME"),
   }
 
   // Cargamos el archivo html
